@@ -7,31 +7,33 @@ const isDev = require("electron-is-dev");
 const Store = require("electron-store");
 const wallpaper = require("wallpaper");
 const fs = require("fs");
-const fetch = require("node-fetch");
 const Path = require("path");
 const axios = require("axios").default;
-const { resolve } = require("path");
-const { rejects } = require("assert");
+const { menubar } = require("menubar");
 
-let mainWindow;
-
-function createWindow() {
-  mainWindow = new BrowserWindow({
-    width: 900,
-    height: 680,
-    webPreferences: {
-      nodeIntegration: true,
-      contextIsolation: false,
-      preload: __dirname + "/preload.js",
+app.on('ready', () => {
+  const options = {
+    width: 400,
+    height: 400,
+    browserWindow: {
+      webPreferences: {
+        nodeIntegration: true,
+        contextIsolation: false,
+        preload: __dirname + "/preload.js",
+      }
     },
-  });
-  mainWindow.loadURL(
-    isDev
+    index:
+    (isDev
       ? "http://localhost:3000"
-      : `file://${path.join(__dirname, "../build/index.html")}`
-  );
-  mainWindow.on("closed", () => (mainWindow = null));
-}
+      : `file://${Path.join(__dirname, "../build/index.html")}`
+    )
+  }
+  const mb = menubar(options);
+  mb.on('ready', () => {
+    console.log('Menubar app is ready.');
+    mb.showWindow()
+  });
+});
 
 const getPicPath = (img_id) => {
   const dir = Path.resolve(app.getPath("pictures"), "./SFW-wallpapers");
@@ -62,20 +64,6 @@ async function downloadImg(img_url,img_id) {
     writer.on("error", reject);
   });
 }
-
-app.on("ready", createWindow);
-
-app.on("window-all-closed", () => {
-  if (process.platform !== "darwin") {
-    app.quit();
-  }
-});
-
-app.on("activate", () => {
-  if (mainWindow === null) {
-    createWindow();
-  }
-});
 
 ipc.on("set-token", (event, arg) => {
   const store = new Store();
