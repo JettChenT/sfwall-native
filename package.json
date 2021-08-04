@@ -1,8 +1,17 @@
 {
   "name": "sfwall-native",
+  "description": "Scan For Wallpapers desktop client",
   "version": "0.1.0",
+  "author":{
+    "name":"Jett Chen",
+    "email":"contact@jettchen.me",
+    "url":"https://jettchen.me"
+  },
   "private": true,
   "dependencies": {
+    "@craco/craco": "^6.2.0",
+    "@heroicons/react": "^1.0.3",
+    "@tailwindcss/forms": "^0.3.3",
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",
@@ -13,18 +22,35 @@
     "node-fetch": "^2.6.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
+    "react-loader-spinner": "^4.0.0",
+    "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.3",
-    "tailwindcss": "^2.2.7",
     "universal-cookie": "^4.0.4",
     "wallpaper": "^5.0.1",
     "web-vitals": "^1.0.1"
   },
+  "build":{
+    "appId": "com.scan4wall.sfwall",
+    "mac":{
+      "category": "public.app-category.utilities"
+    },
+    "files": [
+      "build/**/*",
+      "node_modules/**/*"
+    ],
+    "directories":{
+      "buildResources": "assets"
+    }
+  },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
+    "start": "craco start",
+    "build": "craco build",
+    "test": "craco test",
     "eject": "react-scripts eject",
-    "electron-dev": "concurrently \"BROWSER=none yarn start\" \"wait-on http://localhost:3000 && electron .\""
+    "electron-dev": "concurrently \"BROWSER=none yarn start\" \"wait-on http://localhost:3000 && electron .\"",
+    "postinstall": "electron-builder",
+    "preelectron-pack": "yarn build",
+    "electron-pack": "electron-builder -m"
   },
   "eslintConfig": {
     "extends": [
@@ -45,10 +71,16 @@
     ]
   },
   "devDependencies": {
+    "@tailwindcss/custom-forms": "^0.2.1",
+    "autoprefixer": "^9",
     "concurrently": "^6.2.0",
     "electron": "^13.1.7",
     "electron-builder": "^22.11.7",
+    "postcss": "^7",
+    "postcss-loader": "^6.1.1",
+    "tailwindcss": "npm:@tailwindcss/postcss7-compat",
     "wait-on": "^6.0.0"
   },
-  "main": "public/main.js"
+  "main": "public/electron.js",
+  "homepage": "./"
 }
