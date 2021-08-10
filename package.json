@@ -1,7 +1,7 @@
 {
   "name": "sfwall-native",
   "description": "Scan For Wallpapers desktop client",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "author": {
     "name": "Jett Chen",
     "email": "contact@jettchen.me",
