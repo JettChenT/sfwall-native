@@ -35,6 +35,7 @@ app.on("ready", () => {
   };
   const mb = menubar(options);
   let q = [];
+  let bhlist = [];
   let width = 0;
   let height = 0;
   let dlding = false;
@@ -43,7 +44,10 @@ app.on("ready", () => {
     if (dlding) return;
     dlding = true;
     console.log("pr called!");
-    let img_id = await recommend();
+    let res = await recommend();
+    let img_id = res.img_id;
+    let blur_hash = res.blur_hash;
+    bhlist.push(blur_hash);
     console.log(img_id);
     let url = `https://ik.imagekit.io/sfwall/https://source.unsplash.com/${img_id}/${width}x${height}`;
     downloadImg(url, img_id).then(() => {
@@ -55,13 +59,23 @@ app.on("ready", () => {
   ipc.on("recommend", (event) => {
     let img_id = "random";
     if (q.length > 0) {
+      if (bhlist.length > 0) {
+        let bhash = bhlist.shift();
+        mb.window.webContents.send("setbhash",bhash);
+      }
       img_id = q.shift();
       console.log(`Set wallpaper to: ${getPicPath(img_id)}`);
       mb.window.webContents.send("wpath", getPicPath(img_id));
       wallpaper.set(getPicPath(img_id));
       mb.window.webContents.send("status", "Wallpaper set!");
     } else {
+      let preloaded = false;
       let rid = setInterval(() => {
+        if (bhlist.length > 0 && !preloaded) {
+          let bhash = bhlist.shift();
+          mb.window.webContents.send("setbhash",bhash);
+          preloaded = true;
+        }
         if (q.length > 0) {
           console.log("Check finished!");
           img_id = q.shift();
