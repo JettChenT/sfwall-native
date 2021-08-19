@@ -1,11 +1,30 @@
 const axios = require('axios');
 const Store = require("electron-store");
 
+const get_tm = (hour) => {
+    if (hour<6 || hour>=20) {
+        return "night";
+    }
+    if (hour<8 || hour>=18) {
+        return "sunrise";
+    }
+    if (hour<11){
+        return "morning";
+    }
+    if (hour > 14){
+        return "afternoon";
+    }
+    return "noon";
+}
+
 module.exports = {
     recommend: async () => {
         const store = new Store()
         const token = store.get('token');
-        const url = `https://api.scan4wall.xyz/token-recommendation?access_token=${token}`
+        let cur = new Date();
+        let h = cur.getHours();
+        console.log(get_tm(h));
+        const url = `https://api.scan4wall.xyz/token-recommendation?access_token=${token}&dtime=${get_tm(h)}`
         let img_id = 'random';
         let blur_hash = 'L#LNrwR*NGWB~XWBWBj[IUayj[j[';
         await axios
