@@ -24,7 +24,7 @@ module.exports = {
         let cur = new Date();
         let h = cur.getHours();
         console.log(get_tm(h));
-        const url = `https://api.scan4wall.xyz/token-recommendation?access_token=${token}&dtime=${get_tm(h)}`
+        const url = `https://api.scan4wall.com/token-recommendation?access_token=${token}&dtime=${get_tm(h)}`
         let img_id = 'random';
         let blur_hash = 'L#LNrwR*NGWB~XWBWBj[IUayj[j[';
         await axios
